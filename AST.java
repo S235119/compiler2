@@ -111,8 +111,9 @@ class Update extends AST{
     Expr e;  // The value it receives, e.g., "/Signal2"
     Update(String name, Expr e){this.e=e; this.name=name;}
     public void eval(Environment env) {
-        int result = e.eval(env);  // Evaluate the expression `e` in the current environment
+        boolean result = e.eval(env);  // Evaluate the expression `e` in the current environment
         env.setVariable(name, result);  // Set `name` to the evaluated result in `env`
+
     }
 }
 
@@ -134,7 +135,6 @@ class Trace extends AST{
         this.values=values;
     }
 
-    @Override
     public String toString() {
         StringBuilder output = new StringBuilder(signal + " = ");
 
@@ -206,7 +206,7 @@ class Circuit extends AST {
     public void latchesUpdate(Environment env) {
         for (String latch : latches) {
             String latchOutput = latch + "'";
-            int latchInputValue = env.getVariable(latch); // Get current value of the latch input
+            boolean latchInputValue = env.getVariable(latch); // Get current value of the latch input
             env.setVariable(latchOutput, latchInputValue); // Set it as the output
         }
     }
