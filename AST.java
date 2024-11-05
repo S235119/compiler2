@@ -211,4 +211,61 @@ class Circuit extends AST {
         }
     }
 
+    public void initialize(Environment env) {
+        // Step 1: Initialize input signals at time point 0
+        for (String input : inputs) {
+            // Find the corresponding Trace for the input signal
+            Trace trace = siminputs.stream()
+                    .filter(t -> t.signal.equals(input))
+                    .findFirst()
+                    .orElse(null);
+
+            // Check if Trace is found and has values for initialization
+            if (trace == null || trace.values.length == 0) {
+                throw new IllegalArgumentException("Error: Missing or empty siminput for input signal " + input);
+            }
+
+            // Initialize input signal in Environment with its value at time point 0
+            env.setVariable(input, trace.values[0]);
+        }
+
+        // Step 2: Initialize all latch outputs to 0
+        latchesInit(env);
+
+        // Step 3: Initialize all remaining signals using each Update
+        for (Update update : updates) {
+            update.eval(env);
+        }
+
+        // Step 4: Print the environment to show all variables and their values
+        System.out.println(env.toString());
+    }
+    public void nextCycle(Environment env, int i){
+        for (String input : inputs) {
+            // Find the corresponding Trace for the input signal
+            Trace trace = siminputs.stream()
+                    .filter(t -> t.signal.equals(input))
+                    .findFirst()
+                    .orElse(null);
+
+            // Check if Trace is found and has values for initialization
+            if (trace == null || trace.values.length == 0) {
+                throw new IllegalArgumentException("Error: Missing or empty siminput for input signal " + input);
+            }
+
+            // Initialize input signal in Environment with its value at time point 0
+            env.setVariable(input, trace.values[i]);
+        }
+
+        latchesUpdate(env);
+
+        for (Update update: updates){
+            update.eval(env);
+        }
+
+        System.out.println(env.toString());
+
+    }
+
+
 }
