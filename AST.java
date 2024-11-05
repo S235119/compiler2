@@ -198,7 +198,7 @@ class Circuit extends AST {
     public void latchesInit(Environment env) {
         for (String latch : latches) {
             String latchOutput = latch + "'";
-            env.setVariable(latchOutput, 0);  // Initialize latch output to 0
+            env.setVariable(latchOutput, false);  // Initialize latch output to 0
         }
     }
 
