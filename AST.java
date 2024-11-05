@@ -267,5 +267,13 @@ class Circuit extends AST {
 
     }
 
+    public void runSimulator(Environment env){
+        initialize(env);
+
+        for(int n= 1; n <= siminputs.size(); n++){
+            nextCycle(env, n);
+        }
+    }
+
 
 }
