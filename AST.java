@@ -110,9 +110,9 @@ class Update extends AST{
     String name;  // Signal being updated, e.g. "Signal1"
     Expr e;  // The value it receives, e.g., "/Signal2"
     Update(String name, Expr e){this.e=e; this.name=name;}
-    public void eval(Environment env){
-        e.eval(env);
-
+    public void eval(Environment env) {
+        int result = e.eval(env);  // Evaluate the expression `e` in the current environment
+        env.setVariable(name, result);  // Set `name` to the evaluated result in `env`
     }
 }
 
@@ -132,6 +132,17 @@ class Trace extends AST{
     Trace(String signal, Boolean[] values){
         this.signal=signal;
         this.values=values;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder output = new StringBuilder(signal + " = ");
+
+        for (Boolean value : values) {
+            output.append(value ? "1" : "0");  // Append "1" for true and "0" for false
+        }
+
+        return output.toString();
     }
 }
 
@@ -157,28 +168,47 @@ class Trace extends AST{
 */
 
 
-class Circuit extends AST{
+class Circuit extends AST {
     String name;
     List<String> inputs;
     List<String> outputs;
-    List<String>  latches;
+    List<String> latches;
     List<Def> definitions;
     List<Update> updates;
-    List<Trace>  siminputs;
-    List<Trace>  simoutputs;
+    List<Trace> siminputs;
+    List<Trace> simoutputs;
     int simlength;
+
     Circuit(String name,
             List<String> inputs,
             List<String> outputs,
-            List<String>  latches,
+            List<String> latches,
             List<Def> definitions,
             List<Update> updates,
-            List<Trace>  siminputs){
-        this.name=name;
-        this.inputs=inputs;
-        this.outputs=outputs;
-        this.latches=latches;
-        this.definitions=definitions;
-        this.updates=updates;
-        this.siminputs=siminputs;
+            List<Trace> siminputs) {
+        this.name = name;
+        this.inputs = inputs;
+        this.outputs = outputs;
+        this.latches = latches;
+        this.definitions = definitions;
+        this.updates = updates;
+        this.siminputs = siminputs;
     }
+
+    public void latchesInit(Environment env) {
+        for (String latch : latches) {
+            String latchOutput = latch + "'";
+            env.setVariable(latchOutput, 0);  // Initialize latch output to 0
+        }
+    }
+
+    // Updates each latch output to the current value of its latch input
+    public void latchesUpdate(Environment env) {
+        for (String latch : latches) {
+            String latchOutput = latch + "'";
+            int latchInputValue = env.getVariable(latch); // Get current value of the latch input
+            env.setVariable(latchOutput, latchInputValue); // Set it as the output
+        }
+    }
+
+}
