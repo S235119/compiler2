@@ -142,11 +142,12 @@ class Trace extends AST{
     }
 
     public String toString() {
-        StringBuilder output = new StringBuilder(signal + " = ");
+        StringBuilder output = new StringBuilder();
 
         for (Boolean value : values) {
             output.append(value ? "1" : "0");  // Append "1" for true and "0" for false
         }
+        output = output.append(" = " + signal);
 
         return output.toString();
     }
