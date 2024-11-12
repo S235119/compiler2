@@ -72,8 +72,12 @@ class UseDef extends Expr{
     public boolean eval(Environment env) {
         // TODO Auto-generated method stub
         Environment nenv = new Environment(env);
-        env.getDef(f);
-        throw new UnsupportedOperationException("Unimplemented method 'eval'");
+        Def definition = env.getDef(f);
+        int n = definition.args.size();
+        for(int i=0; i<n; i++)
+            nenv.setVariable(definition.args.get(i),
+                    args.get(i).eval(env));
+        return definition.e.eval(nenv);
     }
 }
 
