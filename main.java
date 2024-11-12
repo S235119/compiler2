@@ -48,7 +48,7 @@ public class main {
 	   AST.java). */
 	
 	Circuit p = (Circuit) new AstMaker().visit(parseTree);
-	p.runSimulator(new Environment());
+	p.runSimulator();
 
 	/* For the second assignment you need to extend the classes of
 	    AST.java with some methods that correspond to running a

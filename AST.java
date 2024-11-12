@@ -71,6 +71,8 @@ class UseDef extends Expr{
     @Override
     public boolean eval(Environment env) {
         // TODO Auto-generated method stub
+        Environment nenv = new Environment(env);
+        env.getDef(f);
         throw new UnsupportedOperationException("Unimplemented method 'eval'");
     }
 }
@@ -267,7 +269,8 @@ class Circuit extends AST {
 
     }
 
-    public void runSimulator(Environment env){
+    public void runSimulator(){
+        Environment env = new Environment(definitions);
         initialize(env);
 
         for(int n = 1; n < siminputs.get(0).values.length; n++){
