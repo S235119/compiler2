@@ -145,7 +145,10 @@ class Trace extends AST{
         StringBuilder output = new StringBuilder();
 
         for (Boolean value : values) {
-            output.append(value ? "1" : "0");  // Append "1" for true and "0" for false
+           if (value == null){
+               output.append(2);
+            }
+            else output.append(value ? "1" : "0");  // Append "1" for true and "0" for false
         }
         output.append(" = " + signal);
 
@@ -218,6 +221,10 @@ class Circuit extends AST {
         }
     }
 
+    public void updateOutput(int number, int value, Boolean bol){
+        simoutputs.get(number).values[value] = bol;
+    }
+
     public void initialize(Environment env) {
         simoutputs = new ArrayList<>();
         for (String out: outputs){
@@ -245,6 +252,10 @@ class Circuit extends AST {
             update.eval(env);
         }
 
+        for (int i = 0; i<outputs.size(); i++){
+            updateOutput(i, 0, env.getVariable(outputs.get(i)));
+        }
+
         // Step 4: Print the environment to show all variables and their values
         System.out.println(env.toString());
     }
@@ -268,6 +279,10 @@ class Circuit extends AST {
             update.eval(env);
         }
 
+        for (int n = 0; n<outputs.size(); n++){
+            updateOutput(n, i, env.getVariable(outputs.get(n)));
+        }
+
         System.out.println(env.toString());
 
     }
@@ -280,6 +295,9 @@ class Circuit extends AST {
             nextCycle(env, n);
         }
 
+        for (Trace t: siminputs){
+            System.out.println(t.toString());
+        }
         for (Trace t: simoutputs){
             System.out.println(t.toString());
         }
