@@ -147,7 +147,7 @@ class Trace extends AST{
         for (Boolean value : values) {
             output.append(value ? "1" : "0");  // Append "1" for true and "0" for false
         }
-        output = output.append(" = " + signal);
+        output.append(" = " + signal);
 
         return output.toString();
     }
