@@ -219,21 +219,22 @@ class Circuit extends AST {
     }
 
     public void initialize(Environment env) {
+        simoutputs = new ArrayList<>();
+        for (String out: outputs){
+            simoutputs.add(new Trace(out, new Boolean[siminputs.get(0).values.length]));
+        }
         // Step 1: Initialize input signals at time point 0
-        for (String input : inputs) {
+        for (int i = 0; i < inputs.size(); i++) {
             // Find the corresponding Trace for the input signal
-            Trace trace = siminputs.stream()
-                    .filter(t -> t.signal.equals(input))
-                    .findFirst()
-                    .orElse(null);
+            Trace trace = siminputs.get(i);
 
             // Check if Trace is found and has values for initialization
             if (trace == null || trace.values.length == 0) {
-                throw new IllegalArgumentException("Error: Missing or empty siminput for input signal " + input);
+                throw new IllegalArgumentException("Error: Missing or empty siminput for input signal " + inputs.get(i));
             }
 
             // Initialize input signal in Environment with its value at time point 0
-            env.setVariable(input, trace.values[0]);
+            env.setVariable(inputs.get(i), trace.values[0]);
         }
 
         // Step 2: Initialize all latch outputs to 0
@@ -248,20 +249,17 @@ class Circuit extends AST {
         System.out.println(env.toString());
     }
     public void nextCycle(Environment env, int i){
-        for (String input : inputs) {
+        for (int n = 0; n<inputs.size(); n++) {
             // Find the corresponding Trace for the input signal
-            Trace trace = siminputs.stream()
-                    .filter(t -> t.signal.equals(input))
-                    .findFirst()
-                    .orElse(null);
+            Trace trace = siminputs.get(n);
 
             // Check if Trace is found and has values for initialization
             if (trace == null || trace.values.length == 0) {
-                throw new IllegalArgumentException("Error: Missing or empty siminput for input signal " + input);
+                throw new IllegalArgumentException("Error: Missing or empty siminput for input signal " + inputs.get(n));
             }
 
             // Initialize input signal in Environment with its value at time point 0
-            env.setVariable(input, trace.values[i]);
+            env.setVariable(inputs.get(n), trace.values[i]);
         }
 
         latchesUpdate(env);
@@ -280,6 +278,10 @@ class Circuit extends AST {
 
         for(int n = 1; n < siminputs.get(0).values.length; n++){
             nextCycle(env, n);
+        }
+
+        for (Trace t: simoutputs){
+            System.out.println(t.toString());
         }
     }
 
