@@ -232,15 +232,12 @@ class Circuit extends AST {
         }
         // Step 1: Initialize input signals at time point 0
         for (int i = 0; i < inputs.size(); i++) {
-            // Find the corresponding Trace for the input signal
             Trace trace = siminputs.get(i);
 
-            // Check if Trace is found and has values for initialization
             if (trace == null || trace.values.length == 0) {
                 throw new IllegalArgumentException("Error: Missing or empty siminput for input signal " + inputs.get(i));
             }
 
-            // Initialize input signal in Environment with its value at time point 0
             env.setVariable(inputs.get(i), trace.values[0]);
         }
 
@@ -260,16 +257,14 @@ class Circuit extends AST {
         System.out.println(env.toString());
     }
     public void nextCycle(Environment env, int i){
+        // Step 1: Initialize input signals at time point n
         for (int n = 0; n<inputs.size(); n++) {
-            // Find the corresponding Trace for the input signal
             Trace trace = siminputs.get(n);
 
-            // Check if Trace is found and has values for initialization
             if (trace == null || trace.values.length == 0) {
                 throw new IllegalArgumentException("Error: Missing or empty siminput for input signal " + inputs.get(n));
             }
 
-            // Initialize input signal in Environment with its value at time point 0
             env.setVariable(inputs.get(n), trace.values[i]);
         }
 
