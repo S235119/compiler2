@@ -208,16 +208,15 @@ class Circuit extends AST {
     public void latchesInit(Environment env) {
         for (String latch : latches) {
             String latchOutput = latch + "'";
-            env.setVariable(latchOutput, false);  // Initialize latch output to 0
+            env.setVariable(latchOutput, false);
         }
     }
 
-    // Updates each latch output to the current value of its latch input
     public void latchesUpdate(Environment env) {
         for (String latch : latches) {
             String latchOutput = latch + "'";
-            boolean latchInputValue = env.getVariable(latch); // Get current value of the latch input
-            env.setVariable(latchOutput, latchInputValue); // Set it as the output
+            boolean latchInputValue = env.getVariable(latch);
+            env.setVariable(latchOutput, latchInputValue);
         }
     }
 
